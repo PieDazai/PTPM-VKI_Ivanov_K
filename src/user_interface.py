@@ -21,8 +21,7 @@ class ConsoleUserInterface(UserInterface):
             return None, None, None, None
 
         if action == "q":
-            print("бай бай")
-            exit(0)
+            return "q", None, None, None
 
         login = input("Введите логин: ")
         password = input("Введите пароль: ")

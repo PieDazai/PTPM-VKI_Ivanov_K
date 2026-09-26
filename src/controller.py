@@ -18,6 +18,10 @@ class Controller:
                 self.user_interface.get_data()
             )
 
+            if action == "q":
+                print("бай бай")
+                break
+
             if action == "1":
                 self.register_user(
                     login,
@@ -31,7 +35,6 @@ class Controller:
                 )
             else:
                 message = "Некорректный выбор"
-
                 self.external_service.send_mail("Ошибка: " + message)
 
     def register_user(
@@ -48,13 +51,14 @@ class Controller:
 
         if not result:
             self.external_service.send_mail("Ошибка: " + message)
-            return None
+            return result, message
 
         saved_user = self.database.get_user(login)
 
         if saved_user is not None:
-            self.external_service.send_mail("Ошибка: " + "Пользователь уже существует")
-            return None
+            result, message = False, "Пользователь уже существует"
+            self.external_service.send_mail("Ошибка: " + message)
+            return result, message
 
         self.database.add_user(
             login,
@@ -65,7 +69,7 @@ class Controller:
         )
 
         self.external_service.send_mail("Регистрация успешна")
-        return None
+        return result, message
 
     def delete_user(
             self,
@@ -78,10 +82,10 @@ class Controller:
         )
 
         if deleted:
-            result, message = True, "Аккаунт удален"
+            message = "Аккаунт удален"
         else:
-            result, message = False, "Пользователь не найден"
+            message = "Пользователь не найден"
 
         self.external_service.send_mail(message)
 
-        return None
+        return deleted, message

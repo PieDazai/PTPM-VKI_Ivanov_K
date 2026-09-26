@@ -1,6 +1,6 @@
 import hashlib
 
-import validation_register
+from src import validation_register
 
 class RegistrationService:
 
