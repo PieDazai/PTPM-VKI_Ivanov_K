@@ -2,11 +2,11 @@ import sqlite3
 
 class Database:
 
-    def __init__(self):
-        self.connection = sqlite3.connect(":memory:")
+    def __init__(self, database_name="database.db"):
+        self.connection = sqlite3.connect(database_name)
 
         self.connection.execute("""
-            CREATE TABLE registrations (
+            CREATE TABLE IF NOT EXISTS registrations (
                 login TEXT,
                 password TEXT,
                 confirm_password TEXT,

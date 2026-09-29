@@ -11,7 +11,7 @@ class TestLab3(unittest.TestCase):
 
     def setUp(self):
         self.registration_service = RegistrationService()
-        self.database = Database()
+        self.database = Database(":memory:")
         self.user_interface = ConsoleUserInterface()
 
         self.external_service = Mock()
