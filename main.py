@@ -1,21 +1,14 @@
-
-from src.database import DatabaseRepository
 from src.parser import ForumParser
-
+from src.database import DatabaseRepository
 
 parser = ForumParser()
-database = DatabaseRepository()
+repository = DatabaseRepository()
 
-url = "https://feeds.bbci.co.uk/news/rss.xml"
+results = parser.parse_page("https://4pda.to/", repository)
 
-news = parser.parse_page(url)
-
-parser.save_to_db(news, database)
-
-for item in news:
-    print(item["id"])
-    print(item["name"])
-    print(item["message"])
-    print("-------------------")
-
-database.close()
+for post in results:
+    print("\nID:", post["id"])
+    print("Автор:", post["name"])
+    print("Сообщение с HTML-разметкой:")
+    print(post["message"])
+    print("-" * 50)

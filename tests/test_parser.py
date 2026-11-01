@@ -1,0 +1,45 @@
+import unittest
+from unittest.mock import patch, Mock
+
+from src.parser import ForumParser
+from src.database import DatabaseRepository
+
+class TestForumParser(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = ForumParser()
+        self.database = DatabaseRepository(":memory:")
+
+        path = "tests/forum.html"
+        self.html = open(path, encoding="utf-8").read()
+
+    def test_parse_page(self):
+        response = Mock()
+        response.text = self.html
+
+        with patch("src.parser.requests.get", return_value=response):
+            result = self.parser.parse_page(
+                "https://example.com",
+                self.database
+            )
+
+        self.assertGreater(len(result), 0)
+
+    def test_save_to_database(self):
+        response = Mock()
+        response.text = self.html
+
+        with patch("src.parser.requests.get", return_value=response):
+            result = self.parser.parse_page(
+                "https://example.com",
+                self.database
+            )
+
+        post_id = result[0]["id"]
+        saved_post = self.database.get_by_id(post_id)
+
+        self.assertIsNotNone(saved_post)
+
+
+if __name__ == "__main__":
+    unittest.main()
