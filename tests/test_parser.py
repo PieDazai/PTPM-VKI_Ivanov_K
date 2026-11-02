@@ -1,8 +1,10 @@
+
 import unittest
 from unittest.mock import patch, Mock
 
 from src.parser import ForumParser
 from src.database import DatabaseRepository
+
 
 class TestForumParser(unittest.TestCase):
 
@@ -11,7 +13,8 @@ class TestForumParser(unittest.TestCase):
         self.database = DatabaseRepository(":memory:")
 
         path = "tests/forum.html"
-        self.html = open(path, encoding="utf-8").read()
+        with open(path, encoding="utf-8") as file:
+            self.html = file.read()
 
     def test_parse_page(self):
         response = Mock()
@@ -22,8 +25,7 @@ class TestForumParser(unittest.TestCase):
                 "https://example.com",
                 self.database
             )
-
-        self.assertGreater(len(result), 0)
+        self.assertEqual(len(result), 2)
 
     def test_save_to_database(self):
         response = Mock()
@@ -39,7 +41,7 @@ class TestForumParser(unittest.TestCase):
         saved_post = self.database.get_by_id(post_id)
 
         self.assertIsNotNone(saved_post)
-
+        self.assertEqual(saved_post["name"], "Ivan")
 
 if __name__ == "__main__":
     unittest.main()

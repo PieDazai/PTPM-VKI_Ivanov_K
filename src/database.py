@@ -7,18 +7,15 @@ class DatabaseRepository:
 
         self.connection.execute("""
             CREATE TABLE IF NOT EXISTS comments (
-                id TEXT PRIMARY KEY,
+                id INT PRIMARY KEY,
                 name TEXT NOT NULL CHECK(length(name) <= 256),
                 message TEXT NOT NULL CHECK(length(message) <= 8096)
             )
         """)
 
-    def add(self, comment_id: str, username: str, message: str):
-        if not isinstance(comment_id, str):
-            raise TypeError("Id должен быть строкой")
-
-        if len(comment_id) == 0:
-            raise ValueError("Id не может быть пустым")
+    def add(self, comment_id: int, username: str, message: str):
+        if not isinstance(comment_id, int):
+            raise TypeError("Id должен быть числом")
 
         if not isinstance(username, str):
             raise TypeError("Имя должно быть строкой")
@@ -40,7 +37,7 @@ class DatabaseRepository:
         self.connection.commit()
         return True
 
-    def get_by_id(self, comment_id: str):
+    def get_by_id(self, comment_id: int):
         result = self.connection.execute(
             "SELECT * FROM comments WHERE id = ?",
             (comment_id,)
@@ -78,7 +75,7 @@ class DatabaseRepository:
 
         return result
 
-    def update(self, comment_id: str, new_message: str):
+    def update(self, comment_id: int, new_message: str):
         if not isinstance(new_message, str):
             raise TypeError("Сообщение должно быть строкой")
 
@@ -94,7 +91,7 @@ class DatabaseRepository:
 
         return result.rowcount > 0
 
-    def delete(self, comment_id: str):
+    def delete(self, comment_id: int):
         result = self.connection.execute(
             "DELETE FROM comments WHERE id = ?",
             (comment_id,)

@@ -22,7 +22,14 @@ class ForumParser:
         for post in posts:
             name = post.find("span", class_="autor")
             message = post.find("div", itemprop="description")
-            post_id = post.get("id")
+
+            post_id = post.get("itemid")
+
+            if not post_id:
+                continue
+            else:
+                post_id = int(post_id)
+
 
             if message and post_id:
                 results.append({

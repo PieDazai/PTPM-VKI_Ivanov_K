@@ -1,7 +1,9 @@
+
 import unittest
 import sqlite3
 
 from src.database import DatabaseRepository
+
 
 class TestDatabaseRepository(unittest.TestCase):
 
@@ -10,70 +12,71 @@ class TestDatabaseRepository(unittest.TestCase):
 
     def test_add_success(self):
         result = self.repository.add(
-            "1rwf4t2fdwqd",
+            101,
             "Ivan",
             "<p>Первое сообщение</p>"
         )
         self.assertTrue(result)
 
     def test_add_duplicate_id(self):
-        self.repository.add("1rwf4t2fdwqd", "Ivan", "Первое сообщение")
+        self.repository.add(101, "Ivan", "Первое сообщение")
 
         with self.assertRaises(sqlite3.IntegrityError):
-            self.repository.add("1rwf4t2fdwqd", "Petr", "Второе сообщение")
+            self.repository.add(101, "Petr", "Второе сообщение")
 
     def test_get_by_id_found(self):
-        self.repository.add("1rwf4t2fdwqd", "Ivan", "Текст сообщения")
+        self.repository.add(101, "Ivan", "Текст сообщения")
 
-        result = self.repository.get_by_id("1rwf4t2fdwqd")
+        result = self.repository.get_by_id(101)
 
         self.assertIsNotNone(result)
-        self.assertEqual(result["id"], "1rwf4t2fdwqd")
+        self.assertEqual(result["id"], 101)
         self.assertEqual(result["name"], "Ivan")
         self.assertEqual(result["message"], "Текст сообщения")
 
     def test_get_by_id_not_found(self):
-        result = self.repository.get_by_id("23к23к")
+        result = self.repository.get_by_id(999)
         self.assertIsNone(result)
 
     def test_get_by_name_found(self):
-        self.repository.add("1rwf4t2fdwqdtt", "Ivan", "Первое сообщение")
-        self.repository.add("1rwf4t2fdwqd242", "Ivan", "Второе сообщение")
-        self.repository.add("1rwf4t2fdwqdkjh", "Petr", "Сообщение Петра")
+        self.repository.add(101, "Ivan", "Первое сообщение")
+        self.repository.add(102, "Ivan", "Второе сообщение")
+        self.repository.add(103, "Petr", "Сообщение Петра")
 
         result = self.repository.get_by_name("Ivan")
 
         self.assertEqual(len(result), 2)
 
     def test_get_by_name_not_found(self):
-        result = self.repository.get_by_name("5tfgrvd")
+        result = self.repository.get_by_name("Unknown")
         self.assertEqual(result, [])
 
     def test_update_success(self):
-        self.repository.add("1rwf4t2fdwqdtt", "Ivan", "Старый текст")
+        self.repository.add(101, "Ivan", "Старый текст")
 
-        result = self.repository.update("1rwf4t2fdwqdtt", "Новый текст")
+        result = self.repository.update(101, "Новый текст")
 
         self.assertTrue(result)
 
-        comment = self.repository.get_by_id("1rwf4t2fdwqdtt")
+        comment = self.repository.get_by_id(101)
         self.assertEqual(comment["message"], "Новый текст")
 
     def test_update_not_found(self):
-        result = self.repository.update("6t45grt", "Новый текст")
+        result = self.repository.update(999, "Новый текст")
         self.assertFalse(result)
 
     def test_delete_success(self):
-        self.repository.add("1rwf4t2fdwqdtt", "Ivan", "Текст сообщения")
+        self.repository.add(101, "Ivan", "Текст сообщения")
 
-        result = self.repository.delete("1rwf4t2fdwqdtt")
+        result = self.repository.delete(101)
 
         self.assertTrue(result)
-        self.assertIsNone(self.repository.get_by_id("1rwf4t2fdwqdtt"))
+        self.assertIsNone(self.repository.get_by_id(101))
 
     def test_delete_not_found(self):
-        result = self.repository.delete("gfdgfdgd")
+        result = self.repository.delete(999)
         self.assertFalse(result)
+
 
 if __name__ == "__main__":
     unittest.main()
