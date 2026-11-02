@@ -13,8 +13,7 @@ class TestForumParser(unittest.TestCase):
         self.database = DatabaseRepository(":memory:")
 
         path = "tests/forum.html"
-        with open(path, encoding="utf-8") as file:
-            self.html = file.read()
+        self.html = open(path, encoding="utf-8").read()
 
     def test_parse_page(self):
         response = Mock()
