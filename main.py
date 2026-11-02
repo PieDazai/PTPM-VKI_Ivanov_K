@@ -4,7 +4,7 @@ from src.database import DatabaseRepository
 parser = ForumParser()
 repository = DatabaseRepository()
 
-results = parser.parse_page("https://4pda.to/", repository)
+results = parser.parse_pages("https://4pda.to/games/", repository, 2)
 
 for post in results:
     print("\nID:", post["id"])

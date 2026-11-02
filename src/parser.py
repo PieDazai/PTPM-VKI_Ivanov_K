@@ -1,3 +1,5 @@
+import time
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -59,3 +61,23 @@ class ForumParser:
                 saved_count += 1
 
         return saved_count
+
+    def parse_pages(self, url, repository, pages):
+        all_results = []
+        base_url = url.rstrip("/")
+
+        for page in range(pages):
+            if page == 0:
+                page_url = f"{base_url}/"
+            else:
+                page_url = f"{base_url}/page/{page + 1}/"
+
+            print(f"\nПарсинг страницы {page + 1}...")
+            results = self.parse_page(page_url, repository)
+            all_results.extend(results)
+
+            if page < pages - 1:
+                time.sleep(1)
+
+        print("\nВсего найдено записей:", len(all_results))
+        return all_results
