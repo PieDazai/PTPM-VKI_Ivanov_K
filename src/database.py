@@ -13,6 +13,24 @@ class DatabaseRepository:
             )
         """)
 
+    def get_all(self):
+        all_posts = self.connection.execute("SELECT * FROM comments")
+
+        rows = all_posts.fetchall()
+
+        result = []
+
+        for row in rows:
+            comment = {
+                "id": row[0],
+                "name": row[1],
+                "message": row[2]
+            }
+
+            result.append(comment)
+
+        return result
+
     def add(self, comment_id: int, username: str, message: str):
         if not isinstance(comment_id, int):
             raise TypeError("Id должен быть числом")
