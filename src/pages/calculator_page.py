@@ -21,9 +21,8 @@ class CalculatorPage:
     def _set_number(self, locator, value):
         field = self.wait.until(EC.element_to_be_clickable(locator))
         field.click()
-        # Надёжная очистка для Angular-полей:
-        # field.send_keys(Keys.CONTROL, "a")
-        # field.send_keys(Keys.DELETE)
+        field.send_keys(Keys.CONTROL, "a")
+        field.send_keys(Keys.DELETE)
         field.send_keys(str(value))
 
     def open(self):
